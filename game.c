@@ -1,8 +1,18 @@
+#include <limits.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
+int whichPicked;
+char cardIn[33];
+int userAnswer;
+int i;
+int numI;
+int ascii;
+int binS;
+int cardInAdded;
 
 // chooses random number
 int randAlg() {
@@ -42,6 +52,20 @@ double cardFive(cardIn) {
 
   return outputCard;
 }
+
+int numPlaces(int n) {
+  if (n < 0)
+    return numPlaces((n == INT_MIN) ? INT_MAX : -n);
+  if (n < 10)
+    return 1;
+  return 1 + numPlaces(n / 10);
+}
+/*int asciify(cardIn){
+
+
+
+}*/
+
 int main() {
   // user input
   // char cardIn[25];
@@ -49,31 +73,40 @@ int main() {
   // start randomizer timer
   srand(time(NULL));
 
-  int whichPicked;
-  int cardIn;
-  int userAnswer;
   // cardIn = fgetc(stdin);
   printf("Welcome!\n");
   printf("\nstart by inputting the number on the card: ");
-  scanf("%d", &cardIn);
+  // scanf("%d", &cardIn);
+  fgets(cardIn, 33, stdin);
 
   // printf("\nrandom alg picked %d\n", randAlg());
+  //
+  for (i = 0; cardIn[i] != 0; i++) {
+    ascii = cardIn[i];
+    printf("ascii is %d\n", ascii);
+    cardInAdded = cardInAdded * (pow(10, numPlaces(ascii)));
+    cardInAdded = cardInAdded + ascii;
+    printf("added %d\n", cardInAdded);
+    // printf("num place %d\n", numPlaces(ascii));
+  }
 
+  cardInAdded = (cardInAdded - 10) / 100;
+  printf("card in final %d\n", cardInAdded);
   // check if random number generated is number
   if (randAlg() == 0) {
-    printf("%f", cardOne(cardIn));
+    printf("%f", cardOne(ascii));
     whichPicked = 1;
   } else if (randAlg() == 1) {
-    printf("%f", cardTwo(cardIn));
+    printf("%f", cardTwo(ascii));
     whichPicked = 2;
   } else if (randAlg() == 2) {
-    printf("%f", cardThree(cardIn));
+    printf("%f", cardThree(ascii));
     whichPicked = 3;
   } else if (randAlg() == 3) {
-    printf("%f", cardFour(cardIn));
+    printf("%f", cardFour(ascii));
     whichPicked = 4;
   } else {
-    printf("%f", cardFive(cardIn));
+    printf("%f", cardFive(ascii));
     whichPicked = 5;
   }
 

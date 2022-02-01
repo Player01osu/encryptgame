@@ -9,4 +9,6 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Designed the chassis in onshape, running the program on a pi, using the guts of an old keyboard for the input device, and some random screen to display everything.
 
+## How to use?
 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Compile game.c with the -lm flag

@@ -1,18 +1,23 @@
-#include <limits.h>
+#include <gtk/gtk.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+static GtkWidget *cardIn;
+// static GtkWidget *number2;
+static GtkWidget *result;
+
 int whichPicked;
-char cardIn[33];
+// char cardIn[6];
 int userAnswer;
 int i;
 int numI;
-int ascii;
+long long ascii;
 int binS;
-int cardInAdded;
+long long cardInAdded;
+int cardInNum;
 
 // chooses random number
 int randAlg() {
@@ -22,37 +27,47 @@ int randAlg() {
   return whichOne;
 }
 
-double cardOne(cardIn) {
+// Take input; multiply by 2
+double cardOne(cardInAdded) {
 
-  double outputCard = cardIn * 2;
-
-  return outputCard;
-}
-double cardTwo(cardIn) {
-
-  double outputCard = cardIn + 5;
-
-  return outputCard;
-}
-double cardThree(cardIn) {
-
-  double outputCard = cardIn * 1.5;
-
-  return outputCard;
-}
-double cardFour(cardIn) {
-
-  double outputCard = cardIn - 5;
-
-  return outputCard;
-}
-double cardFive(cardIn) {
-
-  double outputCard = cardIn + 2.5;
+  double outputCard = cardInAdded * 2;
 
   return outputCard;
 }
 
+// Take input; add 5
+double cardTwo(cardInAdded) {
+
+  double outputCard = cardInAdded + 5;
+
+  return outputCard;
+}
+
+// Take input; multiply by 1.5
+double cardThree(cardInAdded) {
+
+  double outputCard = cardInAdded * 1.5;
+
+  return outputCard;
+}
+
+// Take input; minus 5
+double cardFour(cardInAdded) {
+
+  double outputCard = cardInAdded - 5;
+
+  return outputCard;
+}
+
+// Take input; add 2.5
+double cardFive(cardInAdded) {
+
+  double outputCard = cardInAdded + 2.5;
+
+  return outputCard;
+}
+
+// Determine how many digits in number
 int numPlaces(int n) {
   if (n < 0)
     return numPlaces((n == INT_MIN) ? INT_MAX : -n);
@@ -60,63 +75,46 @@ int numPlaces(int n) {
     return 1;
   return 1 + numPlaces(n / 10);
 }
-/*int asciify(cardIn){
 
+void do_calculate(GtkWidget *calculate, gpointer data) {
+  cardInNum = atoi((char *)gtk_entry_get_text(GTK_ENTRY(cardIn)));
+  // int num2 = atoi((char *)gtk_entry_get_text(GTK_ENTRY(number2)));
+  printf("%lld", ascii);
+  ascii = cardInNum;
 
+  char buffer[32];
+  snprintf(buffer, sizeof(buffer), "result: %lld", ascii);
 
-}*/
+  gtk_label_set_text(GTK_LABEL(result), buffer);
+}
 
-int main() {
-  // user input
-  // char cardIn[25];
+// gcc 007_gtk.c -o 007_gtk `pkg-config --cflags gtk+-3.0` `pkg-config --libs
+// gtk+-3.0`
+int main(int argc, char **argv) {
+  GtkWidget *window, *grid, *calculate;
+  gtk_init(&argc, &argv);
 
-  // start randomizer timer
-  srand(time(NULL));
+  window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+  g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
 
-  // cardIn = fgetc(stdin);
-  printf("Welcome!\n");
-  printf("\nstart by inputting the number on the card: ");
-  // scanf("%d", &cardIn);
-  fgets(cardIn, 33, stdin);
+  grid = gtk_grid_new();
+  gtk_container_add(GTK_CONTAINER(window), grid);
 
-  // printf("\nrandom alg picked %d\n", randAlg());
-  //
-  for (i = 0; cardIn[i] != 0; i++) {
-    ascii = cardIn[i];
-    printf("ascii is %d\n", ascii);
-    cardInAdded = cardInAdded * (pow(10, numPlaces(ascii)));
-    cardInAdded = cardInAdded + ascii;
-    printf("added %d\n", cardInAdded);
-    // printf("num place %d\n", numPlaces(ascii));
-  }
+  cardIn = gtk_entry_new();
+  gtk_grid_attach(GTK_GRID(grid), cardIn, 0, 0, 1, 1);
 
-  cardInAdded = (cardInAdded - 10) / 100;
-  printf("card in final %d\n", cardInAdded);
-  // check if random number generated is number
-  if (randAlg() == 0) {
-    printf("%f", cardOne(ascii));
-    whichPicked = 1;
-  } else if (randAlg() == 1) {
-    printf("%f", cardTwo(ascii));
-    whichPicked = 2;
-  } else if (randAlg() == 2) {
-    printf("%f", cardThree(ascii));
-    whichPicked = 3;
-  } else if (randAlg() == 3) {
-    printf("%f", cardFour(ascii));
-    whichPicked = 4;
-  } else {
-    printf("%f", cardFive(ascii));
-    whichPicked = 5;
-  }
+  /*number2 = gtk_entry_new();
+  gtk_grid_attach(GTK_GRID(grid), number2, 1, 0, 1, 1);*/
 
-  printf("\nWhich random alg is it?");
-  printf("\ncard 1\ncard 2\ncard 3\ncard 4\ncard 5\n");
-  scanf("%d", &userAnswer);
-  if (userAnswer == whichPicked) {
-    printf("\nYou win!!");
-  } else {
-    printf("\nThat's not quite it");
-  }
-  printf("\npicked card %d", whichPicked);
+  calculate = gtk_button_new_with_label("calculate");
+  g_signal_connect(calculate, "clicked", G_CALLBACK(do_calculate), NULL);
+  gtk_grid_attach(GTK_GRID(grid), calculate, 2, 0, 1, 1);
+
+  result = gtk_label_new("result:");
+  gtk_grid_attach(GTK_GRID(grid), result, 3, 0, 1, 1);
+
+  gtk_widget_show_all(window);
+  gtk_main();
+
+  return 0;
 }

@@ -14,7 +14,7 @@ int whichPicked;
 int userAnswer;
 int i;
 int numI;
-long long ascii;
+int ascii;
 int binS;
 long long cardInAdded;
 int cardInNum;
@@ -76,14 +76,17 @@ int numPlaces(int n) {
   return 1 + numPlaces(n / 10);
 }
 
+// cardInNum to ascii, duh
+int toAscii(cardInNum) {
+  ascii = cardInNum;
+  return ascii;
+}
 void do_calculate(GtkWidget *calculate, gpointer data) {
   cardInNum = atoi((char *)gtk_entry_get_text(GTK_ENTRY(cardIn)));
   // int num2 = atoi((char *)gtk_entry_get_text(GTK_ENTRY(number2)));
-  printf("%lld", ascii);
-  ascii = cardInNum;
 
   char buffer[32];
-  snprintf(buffer, sizeof(buffer), "result: %lld", ascii);
+  snprintf(buffer, sizeof(buffer), "result: %d", toAscii(cardInNum));
 
   gtk_label_set_text(GTK_LABEL(result), buffer);
 }

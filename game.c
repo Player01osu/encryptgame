@@ -1,4 +1,5 @@
 #include <gtk/gtk.h>
+#include <limits.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +18,8 @@ int numI;
 int ascii;
 int binS;
 long long cardInAdded;
-int cardInNum;
+char cardIns[10];
+char cardInNum[10];
 
 // chooses random number
 int randAlg() {
@@ -76,24 +78,33 @@ int numPlaces(int n) {
   return 1 + numPlaces(n / 10);
 }
 
-// cardInNum to ascii, duh
-int toAscii(cardInNum) {
-  ascii = cardInNum;
-  return ascii;
-}
+// function takes entry, turns to ascii and prints to result
 void do_calculate(GtkWidget *calculate, gpointer data) {
-  cardInNum = atoi((char *)gtk_entry_get_text(GTK_ENTRY(cardIn)));
-  // int num2 = atoi((char *)gtk_entry_get_text(GTK_ENTRY(number2)));
+  // entry field called cardInNum
+  const gchar cardInNum = *gtk_entry_get_text(GTK_ENTRY(cardIn));
+  cardInAdded = 0;
 
   char buffer[32];
-  snprintf(buffer, sizeof(buffer), "result: %d", toAscii(cardInNum));
+  // cardIns = *cardInNum;
+  /*for (i = 0; cardInNum[i] != 0; i++) {
+    ascii = cardInNum[i];
+    // printf("ascii is %d\n", ascii);
+    cardInAdded = cardInAdded * (pow(10, numPlaces(ascii)));
+    cardInAdded = cardInAdded + ascii;
+    // printf("added %lld\n", cardInAdded);
+    // printf("num place %d\n", numPlaces(ascii));
+  }*/
+
+  ascii = cardIns[3];
+  // ascii = *cardInNum;
+  // snprintf(buffer, sizeof(buffer), "result: %lld", cardInAdded);
+  snprintf(buffer, sizeof(buffer), "result: %c", cardInNum);
 
   gtk_label_set_text(GTK_LABEL(result), buffer);
 }
 
-// gcc 007_gtk.c -o 007_gtk `pkg-config --cflags gtk+-3.0` `pkg-config --libs
-// gtk+-3.0`
 int main(int argc, char **argv) {
+  // spawn window
   GtkWidget *window, *grid, *calculate;
   gtk_init(&argc, &argv);
 
@@ -103,12 +114,11 @@ int main(int argc, char **argv) {
   grid = gtk_grid_new();
   gtk_container_add(GTK_CONTAINER(window), grid);
 
+  // entry window
   cardIn = gtk_entry_new();
   gtk_grid_attach(GTK_GRID(grid), cardIn, 0, 0, 1, 1);
 
-  /*number2 = gtk_entry_new();
-  gtk_grid_attach(GTK_GRID(grid), number2, 1, 0, 1, 1);*/
-
+  // call do calculate function when calculate clicked
   calculate = gtk_button_new_with_label("calculate");
   g_signal_connect(calculate, "clicked", G_CALLBACK(do_calculate), NULL);
   gtk_grid_attach(GTK_GRID(grid), calculate, 2, 0, 1, 1);
